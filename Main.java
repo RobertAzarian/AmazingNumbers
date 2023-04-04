@@ -11,25 +11,24 @@ public class Main {
 
         if (number > 0) {
             boolean isEven = number % 2 == 0;
-            boolean isDivisibleSev = number % 7 == 0;
-            boolean isEndSeven = number % 10 == 7;
-            System.out.println("This number is " + (isEven ? "Even." : "Odd."));
-            System.out.println("It is " + (isDivisibleSev || isEndSeven ? "a Buzz number." : "not a Buzz number."));
-            System.out.println("Explanation:");
+            boolean isBuzz = (number % 7 == 0) || (number % 10 == 7);
+            boolean isDuck = false;
 
-            if (isDivisibleSev || isEndSeven) {
-                if (isDivisibleSev) {
-                    System.out.print(number + " is divisible by 7");
-                    if (isEndSeven) {
-                        System.out.print(" and ends with 7");
-                    }
-                } else {
-                    System.out.print(number + " ends with 7");
+            String strNum = String.valueOf(number);
+            for (int i = 1; i < strNum.length(); i++) {
+                if (strNum.charAt(i) == '0') {
+                    isDuck = true;
+                    break;
                 }
-                System.out.println(".");
-            } else {
-                System.out.println(number + " is neither divisible by 7 nor does it end with 7.");
             }
+
+            System.out.printf("""
+                    Properties of %d
+                            even: %b
+                             odd: %b
+                            buzz: %b
+                            duck: %b
+                    """, number, isEven, !isEven, isBuzz, isDuck);
         } else {
             System.out.println("This number is not natural!");
         }
