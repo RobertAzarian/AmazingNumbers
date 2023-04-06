@@ -10,14 +10,15 @@ public class Main {
 
     public static void main(String[] args) {
         String supRequests = """
-                    Supported requests:
-                    - enter a natural number to know its properties;
-                    - enter two natural numbers to obtain the properties of the list:
-                      * the first parameter represents a starting number;
-                      * the second parameter shows how many consecutive numbers are to be processed;
-                    - separate the parameters with one space;
-                    - enter 0 to exit.
-                    """;
+                Supported requests:
+                - enter a natural number to know its properties;
+                - enter two natural numbers to obtain the properties of the list:
+                  * the first parameter represents a starting number;
+                  * the second parameters show how many consecutive numbers are to be processed;
+                - two natural numbers and a property to search for;
+                - separate the parameters with one space;
+                - enter 0 to exit.
+                """;
 
         System.out.println("Welcome to Amazing Numbers!\n");
         System.out.println(supRequests);
@@ -156,7 +157,7 @@ public class Main {
         boolean isTrue;
         for (int i = 0; i < count; ) {
             String strN = String.valueOf(number);
-            switch (property) {
+            switch (property.toLowerCase()) {
                 case "even" -> isTrue = isEven(strN);
                 case "odd" -> isTrue = isOdd(strN);
                 case "buzz" -> isTrue = isBuzz(strN);
@@ -252,15 +253,11 @@ public class Main {
         long sum = 0;
         long multi = 1;
 
-        if (strNum.length() < 2) {
-            return false;
-        } else {
-            String[] strArrNumbs = strNum.split("");
-            for (String strArrNumb : strArrNumbs) {
-                sum += Long.parseLong(strArrNumb);
-                multi *= Long.parseLong(strArrNumb);
-            }
-            return sum == multi;
+        String[] strArrNumbs = strNum.split("");
+        for (String strArrNumb : strArrNumbs) {
+            sum += Long.parseLong(strArrNumb);
+            multi *= Long.parseLong(strArrNumb);
         }
+        return sum == multi;
     }
 }
