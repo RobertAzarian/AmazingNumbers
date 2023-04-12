@@ -11,11 +11,12 @@ public class Main {
     public static void main(String[] args) {
         String supRequests = """
                 Supported requests:
-                - enter a natural number to know its properties;
+                - enter a natural number to know its properties;\s
                 - enter two natural numbers to obtain the properties of the list:
                   * the first parameter represents a starting number;
-                  * the second parameters show how many consecutive numbers are to be processed;
+                  * the second parameter shows how many consecutive numbers are to be printed;
                 - two natural numbers and a property to search for;
+                - two natural numbers and two properties to search for;
                 - separate the parameters with one space;
                 - enter 0 to exit.
                 """;
@@ -60,6 +61,30 @@ public class Main {
                     break;
                 } else if (result3 == 1) {
                     continue;
+                }
+            } else if (inpLength == 4) {
+                String fV = inpStrArr[2];
+                String sV = inpStrArr[3];
+
+                if (("odd".equalsIgnoreCase(fV) && "even".equalsIgnoreCase(sV)) ||
+                        ("even".equalsIgnoreCase(fV) && "odd".equalsIgnoreCase(sV)) ||
+                        ("sunny".equalsIgnoreCase(inpStrArr[2]) && "square".equalsIgnoreCase(inpStrArr[3])) ||
+                        ("square".equalsIgnoreCase(inpStrArr[2]) && "sunny".equalsIgnoreCase(inpStrArr[3])) ||
+                        ("duck".equalsIgnoreCase(inpStrArr[2]) && "spy".equalsIgnoreCase(inpStrArr[3])) ||
+                        ("spy".equalsIgnoreCase(inpStrArr[2]) && "duck".equalsIgnoreCase(inpStrArr[3]))) {
+                    System.out.printf("""
+                            The request contains mutually exclusive properties: [%s, %s]
+                            There are no numbers with these properties.
+
+                            """, inpStrArr[2].toUpperCase(), inpStrArr[3].toUpperCase());
+                    continue;
+                } else {
+                    int result4 = fourArg(inpStrArr);
+                    if (result4 == 0) {
+                        break;
+                    } else if (result4 == 1) {
+                        continue;
+                    }
                 }
             } else {
                 System.out.println("error");
@@ -165,13 +190,78 @@ public class Main {
                 case "palindromic" -> isTrue = isPalindromic(strN);
                 case "gapful" -> isTrue = isGapful(strN);
                 case "spy" -> isTrue = isSpy(strN);
+                case "sunny" -> isTrue = isSunny(strN);
+                case "square" -> isTrue = isSquare(strN);
                 default -> {
                     System.out.printf("The property [%s] is wrong.\n", property.toUpperCase());
-                    System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD]\n");
+                    System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD, SUNNY, SQUARE]\n");
                     return 1;
                 }
             }
             if (isTrue) {
+                twoArgs(new String[]{strN, "1"});
+                i++;
+            }
+            number++;
+        }
+        System.out.println();
+        return 2;
+    }
+
+
+    public static int fourArg(String[] inpStrArr) {
+        long number = Long.parseLong(inpStrArr[0]);
+        int count = Integer.parseInt(inpStrArr[1]);
+        String property = inpStrArr[2];
+        String property2 = inpStrArr[3];
+
+        boolean isTrue = false;
+        boolean isTrue2 = false;
+        boolean isInpWrong1 = false;
+        boolean isInpWrong2 = false;
+        for (int i = 0; i < count; ) {
+            String strN = String.valueOf(number);
+            switch (property.toLowerCase()) {
+                case "even" -> isTrue = isEven(strN);
+                case "odd" -> isTrue = isOdd(strN);
+                case "buzz" -> isTrue = isBuzz(strN);
+                case "duck" -> isTrue = isDuck(strN);
+                case "palindromic" -> isTrue = isPalindromic(strN);
+                case "gapful" -> isTrue = isGapful(strN);
+                case "spy" -> isTrue = isSpy(strN);
+                case "sunny" -> isTrue = isSunny(strN);
+                case "square" -> isTrue = isSquare(strN);
+                default -> isInpWrong1 = true;
+            }
+            switch (property2.toLowerCase()) {
+                case "even" -> isTrue2 = isEven(strN);
+                case "odd" -> isTrue2 = isOdd(strN);
+                case "buzz" -> isTrue2 = isBuzz(strN);
+                case "duck" -> isTrue2 = isDuck(strN);
+                case "palindromic" -> isTrue2 = isPalindromic(strN);
+                case "gapful" -> isTrue2 = isGapful(strN);
+                case "spy" -> isTrue2 = isSpy(strN);
+                case "sunny" -> isTrue2 = isSunny(strN);
+                case "square" -> isTrue2 = isSquare(strN);
+                default -> isInpWrong2 = true;
+            }
+
+            if (isInpWrong1) {
+                if (isInpWrong2) {
+                    System.out.printf("The properties [%s, %s] are wrong.\n", property.toUpperCase(), property2.toUpperCase());
+                    System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD, SUNNY, SQUARE]\n");
+                    return 1;
+                }
+                System.out.printf("The property [%s] is wrong.\n", property.toUpperCase());
+                System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD, SUNNY, SQUARE]\n");
+                return 1;
+            } else if (isInpWrong2) {
+                System.out.printf("The property [%s] is wrong.\n", property2.toUpperCase());
+                System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD, SUNNY, SQUARE]\n");
+                return 1;
+            }
+
+            if (isTrue && isTrue2) {
                 twoArgs(new String[]{strN, "1"});
                 i++;
             }
@@ -195,6 +285,8 @@ public class Main {
         boolean isPalindromic = isPalindromic(strNum);
         boolean isGapful = isGapful(strNum);
         boolean isSpy = isSpy(strNum);
+        boolean isSunny = isSunny(strNum);
+        boolean isSquare = isSquare(strNum);
 
 
         map.put("even", isEven);
@@ -204,6 +296,8 @@ public class Main {
         map.put("palindromic", isPalindromic);
         map.put("gapful", isGapful);
         map.put("spy", isSpy);
+        map.put("sunny", isSunny);
+        map.put("square", isSquare);
         return map;
     }
 
@@ -259,5 +353,13 @@ public class Main {
             multi *= Long.parseLong(strArrNumb);
         }
         return sum == multi;
+    }
+
+    public static boolean isSunny(String strNum) {
+        return Math.sqrt((Long.parseLong(strNum) + 1)) % 1 == 0;
+    }
+
+    public static boolean isSquare(String strNum) {
+        return Math.sqrt((Long.parseLong(strNum))) % 1 == 0;
     }
 }
