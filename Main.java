@@ -1,5 +1,6 @@
 package numbers;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.HashMap;
@@ -11,12 +12,11 @@ public class Main {
     public static void main(String[] args) {
         String supRequests = """
                 Supported requests:
-                - enter a natural number to know its properties;\s
+                - enter a natural number to know its properties;
                 - enter two natural numbers to obtain the properties of the list:
                   * the first parameter represents a starting number;
                   * the second parameter shows how many consecutive numbers are to be printed;
-                - two natural numbers and a property to search for;
-                - two natural numbers and two properties to search for;
+                - two natural numbers and properties to search for;
                 - separate the parameters with one space;
                 - enter 0 to exit.
                 """;
@@ -62,32 +62,66 @@ public class Main {
                 } else if (result3 == 1) {
                     continue;
                 }
-            } else if (inpLength == 4) {
-                String fV = inpStrArr[2];
-                String sV = inpStrArr[3];
+            } else {
+                String property;
+                StringBuilder wrongProperties = new StringBuilder();
+                boolean isPropertiesRight = true;
 
-                if (("odd".equalsIgnoreCase(fV) && "even".equalsIgnoreCase(sV)) ||
-                        ("even".equalsIgnoreCase(fV) && "odd".equalsIgnoreCase(sV)) ||
-                        ("sunny".equalsIgnoreCase(inpStrArr[2]) && "square".equalsIgnoreCase(inpStrArr[3])) ||
-                        ("square".equalsIgnoreCase(inpStrArr[2]) && "sunny".equalsIgnoreCase(inpStrArr[3])) ||
-                        ("duck".equalsIgnoreCase(inpStrArr[2]) && "spy".equalsIgnoreCase(inpStrArr[3])) ||
-                        ("spy".equalsIgnoreCase(inpStrArr[2]) && "duck".equalsIgnoreCase(inpStrArr[3]))) {
-                    System.out.printf("""
+                for (int j = 2; j < inpStrArr.length; j++) {        // 5000 5 duck jumping
+                    property = inpStrArr[j].toUpperCase();
+                    if (!("BUZZ".equals(property) ||
+                            "DUCK".equals(property) ||
+                            "PALINDROMIC".equals(property) ||
+                            "GAPFUL".equals(property) ||
+                            "SPY".equals(property) ||
+                            "EVEN".equals(property) ||
+                            "ODD".equals(property) ||
+                            "SUNNY".equals(property) ||
+                            "SQUARE".equals(property) ||
+                            "JUMPING".equals(property))) {
+                        isPropertiesRight = false;
+                        wrongProperties.append(property).append(" ");
+                    }
+                }
+                String[] wrongPropertiesArr = wrongProperties.toString().split(" ");
+                if (!isPropertiesRight) {
+                    if (wrongPropertiesArr.length == 1) {
+                        System.out.printf("The property [%s] is wrong.\n", wrongPropertiesArr[0]);
+                        System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD, SUNNY, SQUARE, JUMPING]\n");
+                    } else {
+                        System.out.println("The properties " + Arrays.toString(wrongPropertiesArr) + " are wrong.");
+                        System.out.println("Available properties: [EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING]\n");
+                    }
+                    continue;
+                }
+
+                boolean isMutualExclusive = false;
+                for (int i = 2; i < inpLength - 1; i++) {
+                    for (int j = 3; j < inpLength; j++) {
+                        String fV = inpStrArr[i];
+                        String sV = inpStrArr[j];
+                        if (("odd".equalsIgnoreCase(fV) && "even".equalsIgnoreCase(sV)) ||
+                                ("even".equalsIgnoreCase(fV) && "odd".equalsIgnoreCase(sV)) ||
+                                ("sunny".equalsIgnoreCase(fV) && "square".equalsIgnoreCase(sV)) ||
+                                ("square".equalsIgnoreCase(fV) && "sunny".equalsIgnoreCase(sV)) ||
+                                ("duck".equalsIgnoreCase(fV) && "spy".equalsIgnoreCase(sV)) ||
+                                ("spy".equalsIgnoreCase(fV) && "duck".equalsIgnoreCase(sV))) {
+                            System.out.printf("""
                             The request contains mutually exclusive properties: [%s, %s]
                             There are no numbers with these properties.
 
                             """, inpStrArr[2].toUpperCase(), inpStrArr[3].toUpperCase());
-                    continue;
-                } else {
+                            isMutualExclusive = true;
+                            break;
+                        }
+                    }
+                }
+                if (!isMutualExclusive) {
                     int result4 = fourArg(inpStrArr);
                     if (result4 == 0) {
                         break;
-                    } else if (result4 == 1) {
-                        continue;
                     }
                 }
-            } else {
-                System.out.println("error");
             }
         } while (true);
     }
@@ -177,24 +211,25 @@ public class Main {
     public static int threeArg(String[] inpStrArr) {
         long number = Long.parseLong(inpStrArr[0]);
         int count = Integer.parseInt(inpStrArr[1]);
-        String property = inpStrArr[2];
+        String property = inpStrArr[2].toUpperCase();
 
         boolean isTrue;
         for (int i = 0; i < count; ) {
             String strN = String.valueOf(number);
-            switch (property.toLowerCase()) {
-                case "even" -> isTrue = isEven(strN);
-                case "odd" -> isTrue = isOdd(strN);
-                case "buzz" -> isTrue = isBuzz(strN);
-                case "duck" -> isTrue = isDuck(strN);
-                case "palindromic" -> isTrue = isPalindromic(strN);
-                case "gapful" -> isTrue = isGapful(strN);
-                case "spy" -> isTrue = isSpy(strN);
-                case "sunny" -> isTrue = isSunny(strN);
-                case "square" -> isTrue = isSquare(strN);
+            switch (property) {
+                case "EVEN" -> isTrue = isEven(strN);
+                case "ODD" -> isTrue = isOdd(strN);
+                case "BUZZ" -> isTrue = isBuzz(strN);
+                case "DUCK" -> isTrue = isDuck(strN);
+                case "PALINDROMIC" -> isTrue = isPalindromic(strN);
+                case "GAPFUL" -> isTrue = isGapful(strN);
+                case "SPY" -> isTrue = isSpy(strN);
+                case "SUNNY" -> isTrue = isSunny(strN);
+                case "SQUARE" -> isTrue = isSquare(strN);
+                case "JUMPING" -> isTrue = isJumping(strN);
                 default -> {
-                    System.out.printf("The property [%s] is wrong.\n", property.toUpperCase());
-                    System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD, SUNNY, SQUARE]\n");
+                    System.out.printf("The property [%s] is wrong.\n", property);
+                    System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD, SUNNY, SQUARE, JUMPING]\n");
                     return 1;
                 }
             }
@@ -212,65 +247,44 @@ public class Main {
     public static int fourArg(String[] inpStrArr) {
         long number = Long.parseLong(inpStrArr[0]);
         int count = Integer.parseInt(inpStrArr[1]);
-        String property = inpStrArr[2];
-        String property2 = inpStrArr[3];
 
-        boolean isTrue = false;
-        boolean isTrue2 = false;
-        boolean isInpWrong1 = false;
-        boolean isInpWrong2 = false;
+
+
+        String property;
+        int countProperties = inpStrArr.length - 2;
+        int countOfTrue = 0;
         for (int i = 0; i < count; ) {
             String strN = String.valueOf(number);
-            switch (property.toLowerCase()) {
-                case "even" -> isTrue = isEven(strN);
-                case "odd" -> isTrue = isOdd(strN);
-                case "buzz" -> isTrue = isBuzz(strN);
-                case "duck" -> isTrue = isDuck(strN);
-                case "palindromic" -> isTrue = isPalindromic(strN);
-                case "gapful" -> isTrue = isGapful(strN);
-                case "spy" -> isTrue = isSpy(strN);
-                case "sunny" -> isTrue = isSunny(strN);
-                case "square" -> isTrue = isSquare(strN);
-                default -> isInpWrong1 = true;
-            }
-            switch (property2.toLowerCase()) {
-                case "even" -> isTrue2 = isEven(strN);
-                case "odd" -> isTrue2 = isOdd(strN);
-                case "buzz" -> isTrue2 = isBuzz(strN);
-                case "duck" -> isTrue2 = isDuck(strN);
-                case "palindromic" -> isTrue2 = isPalindromic(strN);
-                case "gapful" -> isTrue2 = isGapful(strN);
-                case "spy" -> isTrue2 = isSpy(strN);
-                case "sunny" -> isTrue2 = isSunny(strN);
-                case "square" -> isTrue2 = isSquare(strN);
-                default -> isInpWrong2 = true;
-            }
 
-            if (isInpWrong1) {
-                if (isInpWrong2) {
-                    System.out.printf("The properties [%s, %s] are wrong.\n", property.toUpperCase(), property2.toUpperCase());
-                    System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD, SUNNY, SQUARE]\n");
-                    return 1;
+            for (int j = 2; j < inpStrArr.length; j++) {        // 1 2 spy odd sunny even
+                property = inpStrArr[j].toUpperCase();
+                switch (property) {
+                    case "EVEN" -> countOfTrue += isEven(strN) ? 1 : 0;
+                    case "ODD" -> countOfTrue += isOdd(strN) ? 1 : 0;
+                    case "BUZZ" -> countOfTrue += isBuzz(strN) ? 1 : 0;
+                    case "DUCK" -> countOfTrue += isDuck(strN) ? 1 : 0;
+                    case "PALINDROMIC" -> countOfTrue += isPalindromic(strN) ? 1 : 0;
+                    case "GAPFUL" -> countOfTrue += isGapful(strN) ? 1 : 0;
+                    case "SPY" -> countOfTrue += isSpy(strN) ? 1 : 0;
+                    case "SUNNY" -> countOfTrue += isSunny(strN) ? 1 : 0;
+                    case "SQUARE" -> countOfTrue += isSquare(strN) ? 1 : 0;
+                    case "JUMPING" -> countOfTrue += isJumping(strN) ? 1 : 0;
+                    default -> System.out.println("error");
                 }
-                System.out.printf("The property [%s] is wrong.\n", property.toUpperCase());
-                System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD, SUNNY, SQUARE]\n");
-                return 1;
-            } else if (isInpWrong2) {
-                System.out.printf("The property [%s] is wrong.\n", property2.toUpperCase());
-                System.out.println("Available properties: [BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD, SUNNY, SQUARE]\n");
-                return 1;
             }
-
-            if (isTrue && isTrue2) {
+            if (countOfTrue == countProperties) {
                 twoArgs(new String[]{strN, "1"});
+                countOfTrue = 0;
+                number++;
                 i++;
+            } else {
+                countOfTrue = 0;
+                number++;
             }
-            number++;
         }
         System.out.println();
         return 2;
     }
-
 
 
     public static HashMap<String, Boolean> getMap(long number) {
@@ -287,6 +301,7 @@ public class Main {
         boolean isSpy = isSpy(strNum);
         boolean isSunny = isSunny(strNum);
         boolean isSquare = isSquare(strNum);
+        boolean isJumping = isJumping(strNum);
 
 
         map.put("even", isEven);
@@ -298,6 +313,7 @@ public class Main {
         map.put("spy", isSpy);
         map.put("sunny", isSunny);
         map.put("square", isSquare);
+        map.put("jumping", isJumping);
         return map;
     }
 
@@ -361,5 +377,18 @@ public class Main {
 
     public static boolean isSquare(String strNum) {
         return Math.sqrt((Long.parseLong(strNum))) % 1 == 0;
+    }
+
+    public static boolean isJumping(String strNum) {        // 2,101,010,101
+        boolean isJumping = true;
+        for (int i = 1; i < strNum.length(); i++) {
+            int n1 = Character.getNumericValue(strNum.charAt(i - 1));
+            int n2 = Character.getNumericValue(strNum.charAt(i));
+            isJumping = ((n1 - 1 == n2) || (n1 + 1 == n2));
+            if (!isJumping) {
+                break;
+            }
+        }
+        return isJumping;
     }
 }
